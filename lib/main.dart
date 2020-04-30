@@ -30,7 +30,7 @@ class MapSampleState extends State<MyHomePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    allMarkers.add(
+        allMarkers.add(
         Marker(
           markerId: MarkerId('myMarker'),
           draggable: false,

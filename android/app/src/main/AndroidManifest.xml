@@ -15,8 +15,8 @@
 
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="flutter_google_map_trial"
-        android:icon="@mipmap/ic_launcher">
+        android:label="WhereIsMyCheese"
+        android:icon="@mipmap/launcher_icon">
         <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDzvV2tINCPc5HFhYRkOCToIp0avvX6ZiY"/>
         <activity
