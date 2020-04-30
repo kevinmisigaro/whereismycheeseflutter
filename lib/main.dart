@@ -18,65 +18,67 @@ class MyApp extends StatelessWidget {
   }
 }
 
-//class MyHomePage extends StatelessWidget{
-//  @override
-//  Widget build(BuildContext context) {
-//    // TODO: implement build
-//    return Scaffold(
-//      appBar: AppBar(
-//        title: Text('Google Maps'),
-//      ),
-//      body: SingleChildScrollView(
-//        child: Column(
-//          crossAxisAlignment: CrossAxisAlignment.start,
-//          children: <Widget>[
-//
-//          ],
-//        ),
-//      ),
-//    );
-//  }
-//}
-
 class MyHomePage extends StatefulWidget {
   @override
   State<MyHomePage> createState() => MapSampleState();
 }
 
 class MapSampleState extends State<MyHomePage> {
+  List<Marker> allMarkers = [];
+  
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    allMarkers.add(
+        Marker(
+          markerId: MarkerId('myMarker'),
+          draggable: false,
+          position: LatLng(-6.643866, 39.18096),
+          onTap: () {
+            print('Marker Tapped');
+          }
+        )
+    );
+  }
+  
   Completer<GoogleMapController> _controller = Completer();
 
   static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
+    target: LatLng(-6.643049, 39.182063),
+    zoom: 15,
   );
 
-  static final CameraPosition _kLake = CameraPosition(
-      bearing: 192.8334901395799,
-      target: LatLng(37.43296265331129, -122.08832357078792),
-      tilt: 59.440717697143555,
-      zoom: 19.151926040649414);
+  _handleTap(LatLng point) {
+    setState(() {
+      allMarkers.add(Marker(
+        markerId: MarkerId(point.toString()),
+        position: point,
+        infoWindow: InfoWindow(
+          title: 'I am a marker'
+        )
+      ));
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+      appBar: AppBar(
+        title: Text('WhereIsMyCheese'),
+        backgroundColor: Colors.orange[500],
+      ),
       body: GoogleMap(
-        mapType: MapType.hybrid,
-        initialCameraPosition: _kGooglePlex,
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-        },
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _goToTheLake,
-        label: Text('To the lake!'),
-        icon: Icon(Icons.directions_boat),
-      ),
+          mapType: MapType.normal,
+          myLocationButtonEnabled: true,
+          initialCameraPosition: _kGooglePlex,
+          markers: Set.from(allMarkers),
+          onMapCreated: (GoogleMapController controller) {
+            _controller.complete(controller);
+          },
+        onLongPress: _handleTap,
+        ),
     );
   }
 
-  Future<void> _goToTheLake() async {
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(_kLake));
-  }
 }
