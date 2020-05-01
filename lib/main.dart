@@ -24,23 +24,33 @@ class MyHomePage extends StatefulWidget {
 }
 
 class MapSampleState extends State<MyHomePage> {
+  BitmapDescriptor pinLocationIcon;
   List<Marker> allMarkers = [];
-  
+
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-        allMarkers.add(
-        Marker(
-          markerId: MarkerId('myMarker'),
-          draggable: false,
-          position: LatLng(-6.643866, 39.18096),
-          onTap: () {
-            print('Marker Tapped');
-          }
-        )
-    );
-  }
+   void initState() {
+     super.initState();
+      BitmapDescriptor.fromAssetImage(
+         ImageConfiguration(devicePixelRatio: 2.5),
+         'assets/icon/cheese64.png').then((onValue) {
+            pinLocationIcon = onValue;
+         });
+   }
+  
+  // @override
+  // void initState() {
+  //   super.initState();
+  //       allMarkers.add(
+  //       Marker(
+  //         markerId: MarkerId('myMarker'),
+  //         draggable: false,
+  //         position: LatLng(-6.643866, 39.18096),
+  //         onTap: () {
+  //           print('Marker Tapped');
+  //         }
+  //       )
+  //   );
+  // }
   
   Completer<GoogleMapController> _controller = Completer();
 
@@ -54,6 +64,7 @@ class MapSampleState extends State<MyHomePage> {
       allMarkers.add(Marker(
         markerId: MarkerId(point.toString()),
         position: point,
+        icon: pinLocationIcon,
         infoWindow: InfoWindow(
           title: 'I am a marker'
         )
