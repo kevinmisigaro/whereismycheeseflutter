@@ -10,12 +10,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return StreamProvider<UserLocation>(
-      create: (context) => LocationService().locationStream,
-      child: MaterialApp(
+    return MaterialApp(
         debugShowCheckedModeBanner: false,
         home: MyHomePage(),
-      )
-    );
+      );
   }
 }

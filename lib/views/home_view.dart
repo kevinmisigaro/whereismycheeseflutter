@@ -40,7 +40,7 @@ class MapSampleState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    var userLocation = Provider.of<UserLocation>(context);
+    // var userLocation = Provider.of<UserLocation>(context);
     return new Scaffold(
       appBar: AppBar(
         title: Text('WhereIsMyCheese'),
@@ -50,7 +50,7 @@ class MapSampleState extends State<MyHomePage> {
         mapType: MapType.normal,
         myLocationButtonEnabled: true,
         initialCameraPosition: CameraPosition(
-          target: LatLng(userLocation.latitude, userLocation.longitude),
+          target: LatLng(-6.642735, 39.1802449),
           zoom: 15,
         ),
         markers: Set.from(allMarkers),
