@@ -1,8 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_google_map_trial/datamodels/user_location.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:provider/provider.dart';
+import 'package:geolocator/geolocator.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -13,8 +12,7 @@ class MapSampleState extends State<MyHomePage> {
   BitmapDescriptor pinLocationIcon;
   List<Marker> allMarkers = [];
 
-  // Location location = Location();
-  // Map<String, double> currentLocation;
+  Position _currentPosition;
 
   @override
   void initState() {
