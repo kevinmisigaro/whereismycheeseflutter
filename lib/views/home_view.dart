@@ -36,6 +36,10 @@ class MapSampleState extends State<MyHomePage> {
     });
   }
 
+  void _getCurrentLocation() async {
+    final position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+  }
+
   @override
   Widget build(BuildContext context) {
     // var userLocation = Provider.of<UserLocation>(context);
