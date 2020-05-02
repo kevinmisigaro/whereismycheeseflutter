@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:provider/provider.dart';
+import '../models/user_location.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -12,11 +13,12 @@ class MapSampleState extends State<MyHomePage> {
   BitmapDescriptor pinLocationIcon;
   List<Marker> allMarkers = [];
 
-  Position _currentPosition;
+  //static LatLng _center = LatLng(-6.642735, 39.1802449);
 
   @override
   void initState() {
     super.initState();
+
     BitmapDescriptor.fromAssetImage(ImageConfiguration(devicePixelRatio: 2.5),
             'assets/icon/cheese64.png')
         .then((onValue) {
@@ -25,6 +27,7 @@ class MapSampleState extends State<MyHomePage> {
   }
 
   Completer<GoogleMapController> _controller = Completer();
+
 
   _handleTap(LatLng point) {
     setState(() {
@@ -36,13 +39,12 @@ class MapSampleState extends State<MyHomePage> {
     });
   }
 
-  void _getCurrentLocation() async {
-    final position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-  }
+
 
   @override
   Widget build(BuildContext context) {
-    // var userLocation = Provider.of<UserLocation>(context);
+     var userLocation = Provider.of<UserLocation>(context);
+     print('Location: Lat${userLocation.latitude}, Long${userLocation.longitude}');
     return new Scaffold(
       appBar: AppBar(
         title: Text('WhereIsMyCheese'),
@@ -52,7 +54,7 @@ class MapSampleState extends State<MyHomePage> {
         mapType: MapType.normal,
         myLocationButtonEnabled: true,
         initialCameraPosition: CameraPosition(
-          target: LatLng(-6.642735, 39.1802449),
+          target: LatLng(userLocation.latitude, userLocation.longitude),
           zoom: 15,
         ),
         markers: Set.from(allMarkers),
@@ -60,6 +62,8 @@ class MapSampleState extends State<MyHomePage> {
           _controller.complete(controller);
         },
         onLongPress: _handleTap,
+        myLocationEnabled: true,
+        compassEnabled: true,
       ),
     );
   }
