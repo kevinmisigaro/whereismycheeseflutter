@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_google_map_trial/widgets/addCheeseDialog.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import '../models/user_location.dart';
@@ -28,23 +29,27 @@ class MapSampleState extends State<MyHomePage> {
 
   Completer<GoogleMapController> _controller = Completer();
 
-
   _handleTap(LatLng point) {
     setState(() {
       allMarkers.add(Marker(
-          markerId: MarkerId(point.toString()),
-          position: point,
-          icon: pinLocationIcon,
-          infoWindow: InfoWindow(title: 'I am a marker')));
+        markerId: MarkerId(point.toString()),
+        position: point,
+        icon: pinLocationIcon,
+        // infoWindow: InfoWindow(title: 'I am a marker'),
+        onTap: () {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) => addCheeseDialog);
+        },
+      ));
     });
   }
 
-
-
   @override
   Widget build(BuildContext context) {
-     var userLocation = Provider.of<UserLocation>(context);
-     print('Location: Lat${userLocation.latitude}, Long${userLocation.longitude}');
+    var userLocation = Provider.of<UserLocation>(context);
+    print(
+        'Location: Lat${userLocation.latitude}, Long${userLocation.longitude}');
     return new Scaffold(
       appBar: AppBar(
         title: Text('WhereIsMyCheese'),
