@@ -10,7 +10,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamProvider<UserLocation>(
-      create: (context) => LocationService().locationStream,
+      initialData: UserLocation(latitude: -6.7726935, longitude: 39.2196418),
+      create: (BuildContext context) => LocationService().locationStream,
       child:  MaterialApp(
         debugShowCheckedModeBanner: false,
         home: MyHomePage(),

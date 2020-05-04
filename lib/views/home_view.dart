@@ -4,6 +4,7 @@ import 'package:flutter_google_map_trial/widgets/addCheeseDialog.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import '../models/user_location.dart';
+import 'package:location/location.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -12,20 +13,25 @@ class MyHomePage extends StatefulWidget {
 
 class MapSampleState extends State<MyHomePage> {
   BitmapDescriptor pinLocationIcon;
+//  LatLng currentUserLocation;
   List<Marker> allMarkers = [];
+
+  Location location = Location();
+
+  Map<String, double> currentLocation;
 
   //static LatLng _center = LatLng(-6.642735, 39.1802449);
 
   @override
   void initState() {
     super.initState();
-
     BitmapDescriptor.fromAssetImage(ImageConfiguration(devicePixelRatio: 2.5),
             'assets/icon/cheese64.png')
         .then((onValue) {
       pinLocationIcon = onValue;
     });
   }
+
 
   Completer<GoogleMapController> _controller = Completer();
 
@@ -49,13 +55,13 @@ class MapSampleState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     var userLocation = Provider.of<UserLocation>(context);
     print(
-        'Location: Lat${userLocation.latitude}, Long${userLocation.longitude}');
+        'Application is built');
     return new Scaffold(
       appBar: AppBar(
         title: Text('WhereIsMyCheese'),
         backgroundColor: Colors.orange[500],
       ),
-      body: GoogleMap(
+      body:GoogleMap(
         mapType: MapType.normal,
         myLocationButtonEnabled: true,
         initialCameraPosition: CameraPosition(

@@ -4,18 +4,18 @@ import 'package:location/location.dart';
 import '../models/user_location.dart';
 
 class LocationService {
+
   UserLocation _currentLocation;
 
-  var location = Location();
+  Location location = Location();
 
-  StreamController<UserLocation> _locationController = StreamController<UserLocation>();
+  StreamController<UserLocation> _locationController = StreamController<UserLocation>.broadcast();
 
-  Stream<UserLocation> get locationStream => _locationController.stream;
 
   LocationService() {
     // Request permission to use location
-    location.requestPermission().then((granted) {
-      if (granted != null) {
+   location.requestPermission().then((granted) {
+     if (granted != null) {
         // If granted listen to the onLocationChanged stream and emit over our controller
         location.onLocationChanged.listen((locationData) {
           if (locationData != null) {
@@ -25,9 +25,11 @@ class LocationService {
             ));
           }
         });
-      }
-    });
+     }
+   });
   }
+
+  Stream<UserLocation> get locationStream => _locationController.stream;
 
   Future<UserLocation> getLocation() async {
     try {
