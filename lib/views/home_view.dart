@@ -4,7 +4,8 @@ import 'package:flutter_google_map_trial/widgets/addCheeseDialog.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import '../models/user_location.dart';
-import 'package:location/location.dart';
+import '../providers/cheese_model.dart';
+import '../widgets/cheeseInfoDialog.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -13,14 +14,6 @@ class MyHomePage extends StatefulWidget {
 
 class MapSampleState extends State<MyHomePage> {
   BitmapDescriptor pinLocationIcon;
-//  LatLng currentUserLocation;
-  List<Marker> allMarkers = [];
-
-  Location location = Location();
-
-  Map<String, double> currentLocation;
-
-  //static LatLng _center = LatLng(-6.642735, 39.1802449);
 
   @override
   void initState() {
@@ -32,47 +25,49 @@ class MapSampleState extends State<MyHomePage> {
     });
   }
 
-
   Completer<GoogleMapController> _controller = Completer();
-
-  _handleTap(LatLng point) {
-    setState(() {
-      allMarkers.add(Marker(
-        markerId: MarkerId(point.toString()),
-        position: point,
-        icon: pinLocationIcon,
-        // infoWindow: InfoWindow(title: 'I am a marker'),
-        onTap: () {
-          showDialog(
-              context: context,
-              builder: (BuildContext context) => addCheeseDialog);
-        },
-      ));
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     var userLocation = Provider.of<UserLocation>(context);
-    print(
-        'Application is built');
+    final appState = Provider.of<CheeseModel>(context);
+    print('Application is built');
     return new Scaffold(
       appBar: AppBar(
         title: Text('WhereIsMyCheese'),
         backgroundColor: Colors.orange[500],
       ),
-      body:GoogleMap(
+      body: GoogleMap(
         mapType: MapType.normal,
         myLocationButtonEnabled: true,
         initialCameraPosition: CameraPosition(
           target: LatLng(userLocation.latitude, userLocation.longitude),
           zoom: 15,
         ),
-        markers: Set.from(allMarkers),
+        markers: Set.from(appState.cheese),
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
         },
-        onLongPress: _handleTap,
+        onLongPress: (LatLng point) {
+          setState(() {
+            appState.add(Marker(
+              markerId: MarkerId(point.toString()),
+              position: point,
+              icon: pinLocationIcon,
+              // infoWindow: InfoWindow(title: 'I am a marker'),
+              onTap: () {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) =>
+                        (appState.getOneCheese(MarkerId(point.toString())))
+                            ? CheeseInfoDialog()
+                            : CheeseDialog(
+                                markerId: MarkerId(point.toString()),
+                              ));
+              },
+            ));
+          });
+        },
         myLocationEnabled: true,
         compassEnabled: true,
       ),
