@@ -5,6 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import '../models/user_location.dart';
 import '../providers/cheese_model.dart';
+import '../widgets/yourCheeseInfoDialog.dart';
 import '../widgets/cheeseInfoDialog.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -58,12 +59,14 @@ class MapSampleState extends State<MyHomePage> {
               onTap: () {
                 showDialog(
                     context: context,
-                    builder: (BuildContext context) =>
-                        (appState.getOneCheese(MarkerId(point.toString())))
+                    builder: (BuildContext context) => (appState
+                            .ifCheeseIsYours(MarkerId(point.toString())))
+                        ? YourCheeseInfoDialog()
+                        : ((appState.getOneCheese(MarkerId(point.toString())))
                             ? CheeseInfoDialog()
                             : CheeseDialog(
                                 markerId: MarkerId(point.toString()),
-                              ));
+                              )));
               },
             ));
           });

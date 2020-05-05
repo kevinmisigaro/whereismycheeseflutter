@@ -6,6 +6,7 @@ class Cheese{
   String message;
   final Marker marker;
   bool hasMessage;
+  bool isYours;
 
-  Cheese({@required this.id, this.message, @required this.marker, this.hasMessage = false});
+  Cheese({@required this.id, this.message, @required this.marker, this.hasMessage = false, this.isYours = false});
 }

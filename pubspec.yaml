@@ -54,6 +54,7 @@ flutter:
   assets:
     - assets/icon/cheese64.png
     - assets/icon/cheese_logo.png
+    - assets/icon/cheese_wheel.png
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

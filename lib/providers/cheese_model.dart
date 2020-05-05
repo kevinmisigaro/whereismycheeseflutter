@@ -23,6 +23,7 @@ class CheeseModel extends ChangeNotifier {
     //assign message string to cheese value
     result.message = message;
     //turn boolean to cheese having message to true
+    result.isYours = !result.isYours;
     result.hasMessage = !result.hasMessage;
     notifyListeners();
   }
@@ -32,6 +33,11 @@ class CheeseModel extends ChangeNotifier {
     var result = _cheese.firstWhere((x) => x.id == markerId);
     //return boolean if cheese has message or not
     return result.hasMessage;
+  }
+
+  bool ifCheeseIsYours(MarkerId markerId){
+    var result = _cheese.firstWhere((x) => x.id == markerId);
+    return result.isYours;
   }
 
   void remove(Cheese cheese) {
