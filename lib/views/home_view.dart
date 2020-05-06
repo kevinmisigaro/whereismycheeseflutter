@@ -32,7 +32,26 @@ class MapSampleState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     var userLocation = Provider.of<UserLocation>(context);
     final appState = Provider.of<CheeseModel>(context);
-    print('Application is built');
+
+    Marker initialCheeseMarker(LatLng point) => Marker(
+        markerId: MarkerId(point.toString()),
+        position: point,
+        icon: pinLocationIcon,
+        onTap: () {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                if (appState.ifCheeseIsYours(MarkerId(point.toString()))) {
+                  return YourCheeseInfoDialog(MarkerId(point.toString()));
+                } else if (appState
+                    .checkIfCheeseHasMessage(MarkerId(point.toString()))) {
+                  return CheeseInfoDialog(MarkerId(point.toString()));
+                } else {
+                  return CheeseDialog(MarkerId(point.toString()));
+                }
+              });
+        });
+
     return new Scaffold(
       appBar: AppBar(
         title: Text('WhereIsMyCheese'),
@@ -45,32 +64,15 @@ class MapSampleState extends State<MyHomePage> {
           target: LatLng(userLocation.latitude, userLocation.longitude),
           zoom: 15,
         ),
-        markers: Set.from(appState.cheese),
+        markers: Set.from(appState.cheese
+            .map((x) => initialCheeseMarker(x.marker.position))
+            .toList()),
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
         },
         onLongPress: (LatLng point) {
           setState(() {
-            appState.add(Marker(
-              markerId: MarkerId(point.toString()),
-              position: point,
-              icon: pinLocationIcon,
-              // infoWindow: InfoWindow(title: 'I am a marker'),
-              onTap: () {
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context) => (appState
-                            .ifCheeseIsYours(MarkerId(point.toString())))
-                        ? YourCheeseInfoDialog(
-                            MarkerId(point.toString()),
-                          )
-                        : ((appState.getOneCheese(MarkerId(point.toString())))
-                            ? CheeseInfoDialog()
-                            : CheeseDialog(
-                                markerId: MarkerId(point.toString()),
-                              )));
-              },
-            ));
+            appState.add(initialCheeseMarker(point));
           });
         },
         myLocationEnabled: true,

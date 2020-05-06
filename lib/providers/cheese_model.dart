@@ -1,18 +1,32 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import '../models/cheese.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import '../widgets/cheeseMarker.dart';
 
 class CheeseModel extends ChangeNotifier {
-  final List<Cheese> _cheese = [];
-  final List<Marker> _cheeseMarkers = [];
+  final List<Cheese> _cheese = [
+    Cheese(
+        id: MarkerId(LatLng(-6.642875, 39.182591).toString()),
+        marker: cheeseMarker(LatLng(-6.642875, 39.182591)),
+        message: 'Fuck you Rick',
+        hasMessage: true),
+    Cheese(
+        id: MarkerId(LatLng(-6.643242, 39.181389).toString()),
+        marker: cheeseMarker(LatLng(-6.643242, 39.181389)),
+        message: 'No fuck you morty!!',
+        hasMessage: true),
+  ];
 
-  List<Marker> get cheese => _cheeseMarkers;
+  List<Cheese> get cheese => _cheese;
 
   void add(Marker marker) {
-    //
     _cheese.add(Cheese(id: marker.markerId, marker: marker));
-    _cheeseMarkers.add(marker);
     notifyListeners();
+  }
+
+  void addInitialMarkers(Marker marker) {
+    _cheese.add(Cheese(id: marker.markerId, marker: marker));
   }
 
   void sendMessage(MarkerId id, String message) {
@@ -28,7 +42,7 @@ class CheeseModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool getOneCheese(MarkerId markerId) {
+  bool checkIfCheeseHasMessage(MarkerId markerId) {
     //get value of cheese which matches the markerId passed in argument
     var result = _cheese.firstWhere((x) => x.id == markerId);
     //return boolean if cheese has message or not
@@ -45,8 +59,9 @@ class CheeseModel extends ChangeNotifier {
     return result.isYours;
   }
 
-  void remove(Cheese cheese) {
-    //remove cheese
+  void remove(MarkerId markerId) {
+    _cheese.removeWhere((x) => x.id == markerId);
+    print(markerId);
     notifyListeners();
   }
 }

@@ -6,7 +6,7 @@ class CheeseDialog extends StatelessWidget {
 
   final MarkerId markerId;
 
-  CheeseDialog({this.markerId});
+  CheeseDialog(this.markerId);
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +22,6 @@ class CheeseDialog extends StatelessWidget {
             ]
         ),
       ),
-    );;
+    );
   }
 }

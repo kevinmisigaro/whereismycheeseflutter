@@ -1,8 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
+import '../providers/cheese_model.dart';
 
-class CheeseInfoDialog extends StatelessWidget {
+class CheeseInfoDialog extends StatefulWidget {
+  final MarkerId markerId;
+
+  CheeseInfoDialog(this.markerId);
+
+  @override
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    return CheeseInfoDialogState();
+  }
+}
+
+class CheeseInfoDialogState extends State<CheeseInfoDialog> {
   @override
   Widget build(BuildContext context) {
+    final appState = Provider.of<CheeseModel>(context);
     // TODO: implement build
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
@@ -26,7 +42,8 @@ class CheeseInfoDialog extends StatelessWidget {
               height: 15.0,
             ),
             Text(
-                'Are these pills supposed to wake me up or something? They\'re robots Morty! It\'s okay to shoot them!'),
+                'Are these pills supposed to wake me up or something? They\'re robots Morty! It\'s okay to shoot them!'
+            ),
             SizedBox(
               height: 15.0,
             ),
@@ -35,7 +52,10 @@ class CheeseInfoDialog extends StatelessWidget {
               child: RaisedButton(
                   textColor: Colors.white,
                   color: Colors.orange[500],
-                  onPressed: () {},
+                  onPressed: () {
+                    appState.remove(widget.markerId);
+                    Navigator.of(context).pop();
+                  },
                   child: Text('PICK UP CHEESE')),
             )
           ]),

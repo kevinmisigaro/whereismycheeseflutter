@@ -8,5 +8,5 @@ class Cheese{
   bool hasMessage;
   bool isYours;
 
-  Cheese({@required this.id, this.message, @required this.marker, this.hasMessage = false, this.isYours = false});
+  Cheese({@required this.id, this.message, @required this.marker, this.hasMessage = false, this.isYours = false,});
 }
