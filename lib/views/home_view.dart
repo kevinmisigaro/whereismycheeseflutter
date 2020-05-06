@@ -61,7 +61,9 @@ class MapSampleState extends State<MyHomePage> {
                     context: context,
                     builder: (BuildContext context) => (appState
                             .ifCheeseIsYours(MarkerId(point.toString())))
-                        ? YourCheeseInfoDialog()
+                        ? YourCheeseInfoDialog(
+                            MarkerId(point.toString()),
+                          )
                         : ((appState.getOneCheese(MarkerId(point.toString())))
                             ? CheeseInfoDialog()
                             : CheeseDialog(

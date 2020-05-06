@@ -14,7 +14,7 @@ class CheeseDialog extends StatelessWidget {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
       child: Container(
-        height: 300.0,
+        height: 280.0,
         width: 300.0,
         child: Column(
             children:<Widget>[

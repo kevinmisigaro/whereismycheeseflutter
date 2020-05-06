@@ -35,7 +35,12 @@ class CheeseModel extends ChangeNotifier {
     return result.hasMessage;
   }
 
-  bool ifCheeseIsYours(MarkerId markerId){
+  String displayMessage(MarkerId markerId) {
+    var result = _cheese.firstWhere((x) => x.id == markerId);
+    return result.message;
+  }
+
+  bool ifCheeseIsYours(MarkerId markerId) {
     var result = _cheese.firstWhere((x) => x.id == markerId);
     return result.isYours;
   }
