@@ -61,8 +61,6 @@ class CheeseModel extends ChangeNotifier {
 
   void remove(MarkerId markerId) {
    _cheese.removeWhere((x) => x.id == markerId);
-  // var result = _cheese.singleWhere((x) => x.id == markerId,orElse: () => null);
-  // _cheese.remove(result);
     notifyListeners();
   }
 }
