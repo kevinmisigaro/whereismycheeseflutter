@@ -5,17 +5,19 @@ import '../providers/cheese_model.dart';
 
 class CheeseInfoDialog extends StatefulWidget {
   final MarkerId markerId;
+  final String message;
 
-  CheeseInfoDialog(this.markerId);
+  CheeseInfoDialog(this.markerId, this.message);
 
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
-    return CheeseInfoDialogState();
+    return _CheeseInfoDialogState();
   }
 }
 
-class CheeseInfoDialogState extends State<CheeseInfoDialog> {
+class _CheeseInfoDialogState extends State<CheeseInfoDialog> {
+  
   @override
   Widget build(BuildContext context) {
     final appState = Provider.of<CheeseModel>(context);
@@ -42,7 +44,7 @@ class CheeseInfoDialogState extends State<CheeseInfoDialog> {
               height: 15.0,
             ),
             Text(
-                'Are these pills supposed to wake me up or something? They\'re robots Morty! It\'s okay to shoot them!'
+                widget.message
             ),
             SizedBox(
               height: 15.0,

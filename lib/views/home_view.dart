@@ -45,7 +45,8 @@ class MapSampleState extends State<MyHomePage> {
                   return YourCheeseInfoDialog(MarkerId(point.toString()));
                 } else if (appState
                     .checkIfCheeseHasMessage(MarkerId(point.toString()))) {
-                  return CheeseInfoDialog(MarkerId(point.toString()));
+                  return CheeseInfoDialog(MarkerId(point.toString()),
+                      appState.displayMessage(MarkerId(point.toString())));
                 } else {
                   return CheeseDialog(MarkerId(point.toString()));
                 }

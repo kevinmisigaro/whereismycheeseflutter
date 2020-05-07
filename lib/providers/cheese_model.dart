@@ -9,12 +9,12 @@ class CheeseModel extends ChangeNotifier {
     Cheese(
         id: MarkerId(LatLng(-6.642875, 39.182591).toString()),
         marker: cheeseMarker(LatLng(-6.642875, 39.182591)),
-        message: 'Fuck you Rick',
+        message: 'Rick and Morty is a great show',
         hasMessage: true),
     Cheese(
         id: MarkerId(LatLng(-6.643242, 39.181389).toString()),
         marker: cheeseMarker(LatLng(-6.643242, 39.181389)),
-        message: 'No fuck you morty!!',
+        message: 'Bojack Horseman is the best show',
         hasMessage: true),
   ];
 
@@ -50,7 +50,7 @@ class CheeseModel extends ChangeNotifier {
   }
 
   String displayMessage(MarkerId markerId) {
-    var result = _cheese.firstWhere((x) => x.id == markerId);
+    var result = _cheese.firstWhere((x) => x.id == markerId,);
     return result.message;
   }
 
@@ -60,8 +60,9 @@ class CheeseModel extends ChangeNotifier {
   }
 
   void remove(MarkerId markerId) {
-    _cheese.removeWhere((x) => x.id == markerId);
-    print(markerId);
+   _cheese.removeWhere((x) => x.id == markerId);
+  // var result = _cheese.singleWhere((x) => x.id == markerId,orElse: () => null);
+  // _cheese.remove(result);
     notifyListeners();
   }
 }
