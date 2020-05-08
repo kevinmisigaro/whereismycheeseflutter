@@ -18,12 +18,13 @@ samples, guidance on mobile development, and a full API reference.
 ## Requirements
 
 Need to have the the following in user computer to run this application:
- - Flutter SDK
+ - Flutter installed
  - Android SDK
  - Android Studio
  
 ## Plugins used in this application
 
+Plugins are essential in flutter applications. Here are some of the plugins used in this application: 
  - google_maps_flutter: ^0.5.26+4 (To display Google Maps)
  - flutter_launcher_icons: ^0.7.5 (To display custom launch icon in the home screen of the phone)
  - location: ^3.0.2 (To track live phone location)
