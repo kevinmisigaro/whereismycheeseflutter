@@ -1,8 +1,14 @@
 # WhereIsMyCheese Flutter Challenge
 
  WhereIsMyCheese is a urban treasure hunt app that empowers people to leave cheesy notes in any location on a map! Previously this challenge was always being done in Android. But now its in Flutter!
+ 
+## What the app does
 
-## Requirements
+- User can collect cheesey notes on the map.
+- User can add cheesey notes on the map.
+- App continues to run/persist in the background
+
+## Requirements to run this app on target machine
 
 Need to have the the following in user computer to run this application:
  - Flutter installed
@@ -25,3 +31,7 @@ Plugins are essential in flutter applications. Here are some of the plugins used
  - provider: ^3.0.0 (State Management)
  - flutter_local_notifications: ^1.4.3 (App Notifications)
  - latlong: ^0.6.1 (Geolocation Calculations)
+ 
+ ## Drawbacks
+ 
+ Implementing background notifications was hard due to failure to get a proper plugin to display notifications while app runs on the background. One possible plugin would have been background_fetch but it sends notifications after 15 minutes whereby this app needs to display notification to the user on the spot.
