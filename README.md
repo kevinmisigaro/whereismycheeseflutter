@@ -17,4 +17,4 @@ Plugins are essential in flutter applications. Here are some of the plugins used
  - location: ^3.0.2 (To track live phone location)
  - provider: ^3.0.0 (State Management)
  - flutter_local_notifications: ^1.4.3 (App Notifications)
- - latlong: ^0.6.1 (Geolocaiton Calculations)
+ - latlong: ^0.6.1 (Geolocation Calculations)
