@@ -8,6 +8,7 @@
 - User can add cheesey notes on the map.
 - App continues to run/persist in the background
 
+
 ## Requirements to run this app on target machine
 
 Need to have the the following in user computer to run this application:
@@ -21,6 +22,20 @@ Need to have the the following in user computer to run this application:
 - Clone repository
 - Get packpages/dependencies by running flutter packages get in terminal (or on pubspec.yaml file)
 - Connect physical device with computer and run the application (or run flutter run)
+
+## Code structure
+
+The main code is found in the lib folder. It contains:
+- models
+- provider (to handle State Management)
+- services (to handle location service)
+- views (screen(s) which the user sees)
+- widgets (independent widgets)
+- main.dart (file from where the whole app starts to run)
+
+Assets are found in the asset folder. This mainly contains image assets for icons.
+
+pubspec.yaml file contains all the added dependencies and packages.
  
 ## Plugins used in this application
 
