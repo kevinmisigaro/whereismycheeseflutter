@@ -1,3 +1,5 @@
+//user location object
+
 class UserLocation {
   final double latitude;
   final double longitude;

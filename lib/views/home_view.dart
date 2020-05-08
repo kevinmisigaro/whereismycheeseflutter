@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_google_map_trial/widgets/addCheeseDialog.dart';
@@ -9,6 +10,7 @@ import '../providers/cheese_model.dart';
 import '../widgets/yourCheeseInfoDialog.dart';
 import '../widgets/cheeseInfoDialog.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:latlong/latlong.dart' as lat;
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -25,35 +27,39 @@ class MapSampleState extends State<MyHomePage> {
   var settingsIOS;
   var initializationSettings;
 
+//function which displays notification on phone
   void _showNotifications() async {
     await _demoNotification();
   }
 
   Future<void> _demoNotification() async {
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      'channel ID', 'channel name', 'channel description',
-      importance: Importance.Max,
-      priority: Priority.High,
-      ticker: 'test ticker'
-    );
+        'channel ID', 'channel name', 'channel description',
+        importance: Importance.Max,
+        priority: Priority.High,
+        ticker: 'test ticker');
 
     var iOSChannelSpecifics = IOSNotificationDetails();
-    var platformChannelSpecifics = NotificationDetails(androidPlatformChannelSpecifics, iOSChannelSpecifics);
-    
-    await notifications.show(0, 'Check me!', 'You are near a cheese', platformChannelSpecifics, payload: 'test');
+    var platformChannelSpecifics = NotificationDetails(
+        androidPlatformChannelSpecifics, iOSChannelSpecifics);
+
+    await notifications.show(
+        0, 'Check me!', 'You are near a cheese', platformChannelSpecifics,
+        payload: 'test');
   }
 
   @override
   void initState() {
     super.initState();
-//Notifications
-// initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
+//Following code handles notifications
     settingsAndroid = AndroidInitializationSettings('cheese_logo');
     settingsIOS = IOSInitializationSettings(
         onDidReceiveLocalNotification: onDidReceiveLocalNotification);
-    initializationSettings = InitializationSettings(settingsAndroid, settingsIOS);
-    
-    notifications.initialize(initializationSettings, onSelectNotification: onSelectNotification);
+    initializationSettings =
+        InitializationSettings(settingsAndroid, settingsIOS);
+
+    notifications.initialize(initializationSettings,
+        onSelectNotification: onSelectNotification);
 
     //Custom image for marker
     BitmapDescriptor.fromAssetImage(ImageConfiguration(devicePixelRatio: 2.5),
@@ -61,46 +67,77 @@ class MapSampleState extends State<MyHomePage> {
         .then((onValue) {
       pinLocationIcon = onValue;
     });
+
+    print('init state is called here');
   }
 
   Future onSelectNotification(String payload) async {
-    if(payload != null){
+    if (payload != null) {
       print('Notification payload: $payload');
     }
     await showDialog(
         context: context,
         builder: (BuildContext context) => AlertDialog(
-          content: Text('Check your nearest location for cheese'),
-          actions: <Widget>[
-            FlatButton(onPressed: (){
-              Navigator.of(context).pop();
-            }, child: Text('Okay'))
-          ],
-        )
-    );
+              content: Text('Check your nearest location for cheese'),
+              actions: <Widget>[
+                FlatButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('Okay'))
+              ],
+            ));
   }
 
-  Future onDidReceiveLocalNotification(int id, String title, String body, String payload) async {
+  Future onDidReceiveLocalNotification(
+      int id, String title, String body, String payload) async {
     await showDialog(
         context: context,
         builder: (BuildContext context) => AlertDialog(
-          content: Text('Check your nearest location for cheese'),
-          actions: <Widget>[
-            FlatButton(onPressed: (){
-              Navigator.of(context).pop();
-            }, child: Text('Okay'))
-          ],
-            )
-    );
+              content: Text('Check your nearest location for cheese'),
+              actions: <Widget>[
+                FlatButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('Okay'))
+              ],
+            ));
   }
 
   Completer<GoogleMapController> _controller = Completer();
 
   @override
   Widget build(BuildContext context) {
-    var userLocation = Provider.of<UserLocation>(context);
+    //provider for user location
+    var userLocation = Provider.of<UserLocation>(context); 
+
+    //provider for cheese list
     final appState = Provider.of<CheeseModel>(context);
 
+    final lat.Distance distance = new lat.Distance();
+
+    //Calculate distance between all markers and user location
+    void calculateDistance(latitude, longitude) {
+      final double meter = distance(
+          new lat.LatLng(userLocation.latitude, userLocation.longitude),
+          new lat.LatLng(latitude, longitude));
+
+      //if distance is greater or equal to 50 meters, display notification
+      if (meter >= 50) {
+        _showNotifications();
+      }
+    }
+
+    // void checkDistance() {
+    //   appState.cheese
+    //          .map((x) => x.marker.position)
+    //          .toList()
+    //          .forEach((y) => calculateDistance(y.latitude, y.longitude));
+    // }
+
+
+    //class to give property to marker icon
     Marker initialCheeseMarker(LatLng point) => Marker(
         markerId: MarkerId(point.toString()),
         position: point,
@@ -126,28 +163,25 @@ class MapSampleState extends State<MyHomePage> {
         title: Text('WhereIsMyCheese'),
         backgroundColor: Colors.orange[500],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Add your onPressed code here!
-          _showNotifications();
-        },
-        child: Icon(Icons.navigation),
-        backgroundColor: Colors.green,
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: GoogleMap(
-        mapType: MapType.normal,
+        //Google map background
+        mapType: MapType.normal, //normal map type set
         myLocationButtonEnabled: true,
         initialCameraPosition: CameraPosition(
+          //initial camera position set to user location
           target: LatLng(userLocation.latitude, userLocation.longitude),
           zoom: 15,
         ),
+
+        //returns all markers from cheese
         markers: Set.from(appState.cheese
             .map((x) => initialCheeseMarker(x.marker.position))
             .toList()),
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
         },
+
+        //on long press on google map, cheese is added
         onLongPress: (LatLng point) {
           setState(() {
             appState.add(initialCheeseMarker(point));

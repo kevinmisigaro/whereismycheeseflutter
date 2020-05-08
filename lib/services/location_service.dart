@@ -11,7 +11,6 @@ class LocationService {
 
   StreamController<UserLocation> _locationController = StreamController<UserLocation>.broadcast();
 
-
   LocationService() {
     // Request permission to use location
    location.requestPermission().then((granted) {
@@ -29,8 +28,10 @@ class LocationService {
    });
   }
 
+//get location stream
   Stream<UserLocation> get locationStream => _locationController.stream;
 
+//funtion to get user current location
   Future<UserLocation> getLocation() async {
     try {
       var userLocation = await location.getLocation();

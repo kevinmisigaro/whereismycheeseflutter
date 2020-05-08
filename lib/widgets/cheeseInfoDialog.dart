@@ -3,6 +3,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import '../providers/cheese_model.dart';
 
+//this Widget is for cheese from other sources
 class CheeseInfoDialog extends StatefulWidget {
   final MarkerId markerId;
   final String message;
@@ -44,14 +45,14 @@ class _CheeseInfoDialogState extends State<CheeseInfoDialog> {
               height: 15.0,
             ),
             Text(
-                widget.message
+                widget.message //text which shows cheese message
             ),
             SizedBox(
               height: 15.0,
             ),
             ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(25.0)),
-              child: RaisedButton(
+              child: RaisedButton( //button to remove cheese from map
                   textColor: Colors.white,
                   color: Colors.orange[500],
                   onPressed: () {

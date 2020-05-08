@@ -3,6 +3,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import '../providers/cheese_model.dart';
 
+//This Widget is for displaying info for cheese made by you
 class YourCheeseInfoDialog extends StatelessWidget {
   final MarkerId markerId;
 
