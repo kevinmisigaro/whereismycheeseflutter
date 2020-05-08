@@ -137,7 +137,7 @@ class MapSampleState extends State<MyHomePage> {
     // }
 
 
-    //class to give property to marker icon
+    //setting how the marker in Google Map will appear.
     Marker initialCheeseMarker(LatLng point) => Marker(
         markerId: MarkerId(point.toString()),
         position: point,
@@ -177,6 +177,8 @@ class MapSampleState extends State<MyHomePage> {
         markers: Set.from(appState.cheese
             .map((x) => initialCheeseMarker(x.marker.position))
             .toList()),
+
+        //when map is created, run this funtion    
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
         },

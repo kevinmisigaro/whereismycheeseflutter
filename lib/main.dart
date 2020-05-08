@@ -7,7 +7,8 @@ import 'services/location_service.dart';
 
 //main function runs the entire application
 void main() => runApp(
-  ChangeNotifierProvider( //provider which handles the Cheese state
+  //provider which handles the Cheese state
+  ChangeNotifierProvider( 
     create: (context) => CheeseModel(),
     child: MyApp(),
   )
@@ -16,11 +17,13 @@ void main() => runApp(
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return StreamProvider<UserLocation>( //Provider which helps track user location
+    //Provider which helps track user location
+    return StreamProvider<UserLocation>( 
       initialData: UserLocation(latitude: -6.642735, longitude: 39.1802449), //initial location
       create: (BuildContext context) => LocationService().locationStream,
       child:  MaterialApp(
-        debugShowCheckedModeBanner: false, //turn off debug banner in app
+        //turn off debug banner in app
+        debugShowCheckedModeBanner: false, 
         home: MyHomePage(),
       ),
     );

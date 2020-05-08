@@ -19,7 +19,8 @@ class CheeseDialog extends StatelessWidget {
         width: 300.0,
         child: Column(
             children:<Widget>[
-              CheeseForm(this.markerId) //form to add message to cheese
+              //form to add message to cheese
+              CheeseForm(this.markerId) 
             ]
         ),
       ),

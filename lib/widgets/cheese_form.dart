@@ -33,14 +33,17 @@ class CheeseFormState extends State<CheeseForm> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
-                  IconButton( //close button
+                  //close button
+                  IconButton( 
                       icon: Icon(Icons.clear),
                       onPressed: () {
                         Navigator.of(context).pop();
                       })
                 ],
               ),
-              TextFormField( //text input field
+
+              //text input field
+              TextFormField( 
                 decoration: InputDecoration(
                   fillColor: Colors.grey[100],
                   filled: true,
@@ -67,11 +70,12 @@ class CheeseFormState extends State<CheeseForm> {
               SizedBox(height: 7.0,),
               ClipRRect(
                 borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                child: RaisedButton(
+                child: RaisedButton( //submit button
                   color: Colors.orange,
                   textColor: Colors.white,
                   onPressed: () {
-                    appState.sendMessage( //function call which adds the text to the cheese
+                    //function call which adds the text to the cheese
+                    appState.sendMessage( 
                         widget.markerId, _textEditingController.text);
                     Navigator.of(context).pop();
                   },
