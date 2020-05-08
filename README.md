@@ -24,9 +24,9 @@ Need to have the the following in user computer to run this application:
  
 ## Plugins used in this application
 
-  google_maps_flutter: ^0.5.26+4 (To display Google Maps)
-  flutter_launcher_icons: ^0.7.5 (To display custom launch icon in the home screen of the phone)
-  location: ^3.0.2 (To track live phone location)
-  provider: ^3.0.0 (State Management)
-  flutter_local_notifications: ^1.4.3 (App Notifications)
-  latlong: ^0.6.1 (Geolocaiton Calculations)
+ - google_maps_flutter: ^0.5.26+4 (To display Google Maps)
+ - flutter_launcher_icons: ^0.7.5 (To display custom launch icon in the home screen of the phone)
+ - location: ^3.0.2 (To track live phone location)
+ - provider: ^3.0.0 (State Management)
+ - flutter_local_notifications: ^1.4.3 (App Notifications)
+ - latlong: ^0.6.1 (Geolocaiton Calculations)
