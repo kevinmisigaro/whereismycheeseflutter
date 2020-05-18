@@ -31,6 +31,7 @@ class CheeseModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  //get latitude and longitude point from marker ID
   LatLng getLatLng(MarkerId id){
     //first check for the Cheese value which matches the id passed on the argument
     var result = _cheese.firstWhere((x) => x.id == id);
@@ -66,10 +67,3 @@ class CheeseModel extends ChangeNotifier {
     notifyListeners();
   }
 }
-
-
-
-//adds initial static markers to the map to emulate markers put by "other" users of the app
-//  void addInitialMarkers(Marker marker) {
-//    _cheese.add(Cheese(id: marker.markerId, marker: marker));
-//  }

@@ -45,7 +45,7 @@ class MapSampleState extends State<MyHomePage> {
       pinLocationIcon = onValue;
     });
   }
-
+  //notification message display for android
   Future onSelectNotification(String payload) async {
     if (payload != null) {
       print('Notification payload: $payload');
@@ -64,6 +64,7 @@ class MapSampleState extends State<MyHomePage> {
             ));
   }
 
+  //notification message display for IOS
   Future onDidReceiveLocalNotification(
       int id, String title, String body, String payload) async {
     await showDialog(
@@ -105,7 +106,7 @@ class MapSampleState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    //provider for user location
+    //provider for user location with latitude and longitude
     var userLocation = Provider.of<UserLocation>(context);
 
     //provider for cheese list

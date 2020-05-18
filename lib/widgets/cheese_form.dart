@@ -13,7 +13,6 @@ class CheeseForm extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return CheeseFormState();
   }
 }
@@ -23,7 +22,6 @@ class CheeseFormState extends State<CheeseForm> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
@@ -38,7 +36,7 @@ class CheeseFormState extends State<CheeseForm> {
 
     final LatLng position = appState.getLatLng(widget.markerId); //get marker LatLng from marker ID using the cheese service
 
-    //Calculate distance between all markers and user location
+    //Calculate distance between newly created marker and user location
     void calculateDistance(latitude, longitude) {
       final double meter = distance(
           new lat.LatLng(userLocation.latitude, userLocation.longitude),
@@ -50,7 +48,6 @@ class CheeseFormState extends State<CheeseForm> {
       }
     }
 
-    // TODO: implement build
     return Form(
         key: _formKey,
         child: Padding(
@@ -89,6 +86,7 @@ class CheeseFormState extends State<CheeseForm> {
                 ),
                 controller: _textEditingController,
                 validator: (value) {
+                  //check to see if value is empty
                   if (value.isEmpty) {
                     return 'Please enter some text';
                   }
@@ -108,8 +106,8 @@ class CheeseFormState extends State<CheeseForm> {
                     //function call which adds the text to the cheese
                     appState.sendMessage(
                         widget.markerId, _textEditingController.text);
-                    Navigator.of(context).pop();
-                    calculateDistance(position.latitude, position.longitude);
+                    Navigator.of(context).pop(); //closes dialog and returns to previous context, which is the home screen
+                    calculateDistance(position.latitude, position.longitude); //call function to calculate distance between user location and new marker
                   },
                   child: Text('Save Cheese!'),
                 ),
