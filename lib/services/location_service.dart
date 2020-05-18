@@ -31,7 +31,7 @@ class LocationService {
 //get location stream
   Stream<UserLocation> get locationStream => _locationController.stream;
 
-//funtion to get user current location
+//function to get user current location
   Future<UserLocation> getLocation() async {
     try {
       var userLocation = await location.getLocation();

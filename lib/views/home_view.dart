@@ -6,7 +6,7 @@ import 'package:flutter_google_map_trial/widgets/addCheeseDialog.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import '../models/user_location.dart';
-import '../providers/cheese_model.dart';
+import '../services/cheese_service.dart';
 import '../widgets/yourCheeseInfoDialog.dart';
 import '../widgets/cheeseInfoDialog.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -110,7 +110,7 @@ class MapSampleState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     //provider for user location
-    var userLocation = Provider.of<UserLocation>(context); 
+    var userLocation = Provider.of<UserLocation>(context);
 
     //provider for cheese list
     final appState = Provider.of<CheeseModel>(context);
@@ -136,7 +136,6 @@ class MapSampleState extends State<MyHomePage> {
     //          .forEach((y) => calculateDistance(y.latitude, y.longitude));
     // }
 
-
     //setting how the marker in Google Map will appear.
     Marker initialCheeseMarker(LatLng point) => Marker(
         markerId: MarkerId(point.toString()),
@@ -146,15 +145,8 @@ class MapSampleState extends State<MyHomePage> {
           showDialog(
               context: context,
               builder: (BuildContext context) {
-                if (appState.ifCheeseIsYours(MarkerId(point.toString()))) {
-                  return YourCheeseInfoDialog(MarkerId(point.toString()));
-                } else if (appState
-                    .checkIfCheeseHasMessage(MarkerId(point.toString()))) {
-                  return CheeseInfoDialog(MarkerId(point.toString()),
-                      appState.displayMessage(MarkerId(point.toString())));
-                } else {
-                  return CheeseDialog(MarkerId(point.toString()));
-                }
+                return CheeseInfoDialog(MarkerId(point.toString()),
+                    appState.displayMessage(MarkerId(point.toString())));
               });
         });
 
@@ -178,7 +170,7 @@ class MapSampleState extends State<MyHomePage> {
             .map((x) => initialCheeseMarker(x.marker.position))
             .toList()),
 
-        //when map is created, run this funtion    
+        //when map is created, run this function
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
         },
@@ -188,6 +180,11 @@ class MapSampleState extends State<MyHomePage> {
           setState(() {
             appState.add(initialCheeseMarker(point));
           });
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return CheeseDialog(MarkerId(point.toString()));
+              });
         },
         myLocationEnabled: true,
         compassEnabled: true,

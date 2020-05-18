@@ -8,4 +8,11 @@
         android:gravity="center"
         android:src="@mipmap/cheese_logo" />
     </item>
+    <item
+        android:bottom="240dp">
+        <bitmap
+            android:gravity="bottom"
+            android:src="@mipmap/whereismycheese_logo"
+         />
+    </item>
 </layer-list>
