@@ -7,10 +7,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import '../models/user_location.dart';
 import '../services/cheese_service.dart';
-import '../widgets/yourCheeseInfoDialog.dart';
 import '../widgets/cheeseInfoDialog.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:latlong/latlong.dart' as lat;
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -27,31 +25,10 @@ class MapSampleState extends State<MyHomePage> {
   var settingsIOS;
   var initializationSettings;
 
-//function which displays notification on phone
-  void _showNotifications() async {
-    await _demoNotification();
-  }
-
-  Future<void> _demoNotification() async {
-    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-        'channel ID', 'channel name', 'channel description',
-        importance: Importance.Max,
-        priority: Priority.High,
-        ticker: 'test ticker');
-
-    var iOSChannelSpecifics = IOSNotificationDetails();
-    var platformChannelSpecifics = NotificationDetails(
-        androidPlatformChannelSpecifics, iOSChannelSpecifics);
-
-    await notifications.show(
-        0, 'Check me!', 'You are near a cheese', platformChannelSpecifics,
-        payload: 'test');
-  }
-
   @override
   void initState() {
     super.initState();
-//Following code handles notifications
+    //Following code handles notifications
     settingsAndroid = AndroidInitializationSettings('cheese_logo');
     settingsIOS = IOSInitializationSettings(
         onDidReceiveLocalNotification: onDidReceiveLocalNotification);
@@ -67,8 +44,6 @@ class MapSampleState extends State<MyHomePage> {
         .then((onValue) {
       pinLocationIcon = onValue;
     });
-
-    print('init state is called here');
   }
 
   Future onSelectNotification(String payload) async {
@@ -105,6 +80,27 @@ class MapSampleState extends State<MyHomePage> {
             ));
   }
 
+  //function which displays notification on phone
+  void showNotifications() async {
+    await _demoNotification();
+  }
+
+  Future<void> _demoNotification() async {
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+        'channel ID', 'channel name', 'channel description',
+        importance: Importance.Max,
+        priority: Priority.High,
+        ticker: 'test ticker');
+
+    var iOSChannelSpecifics = IOSNotificationDetails();
+    var platformChannelSpecifics = NotificationDetails(
+        androidPlatformChannelSpecifics, iOSChannelSpecifics);
+
+    await notifications.show(
+        0, 'Check me!', 'You are near a cheese', platformChannelSpecifics,
+        payload: 'test');
+  }
+
   Completer<GoogleMapController> _controller = Completer();
 
   @override
@@ -115,27 +111,6 @@ class MapSampleState extends State<MyHomePage> {
     //provider for cheese list
     final appState = Provider.of<CheeseModel>(context);
 
-    final lat.Distance distance = new lat.Distance();
-
-    //Calculate distance between all markers and user location
-    void calculateDistance(latitude, longitude) {
-      final double meter = distance(
-          new lat.LatLng(userLocation.latitude, userLocation.longitude),
-          new lat.LatLng(latitude, longitude));
-
-      //if distance is greater or equal to 50 meters, display notification
-      if (meter >= 50) {
-        _showNotifications();
-      }
-    }
-
-    // void checkDistance() {
-    //   appState.cheese
-    //          .map((x) => x.marker.position)
-    //          .toList()
-    //          .forEach((y) => calculateDistance(y.latitude, y.longitude));
-    // }
-
     //setting how the marker in Google Map will appear.
     Marker initialCheeseMarker(LatLng point) => Marker(
         markerId: MarkerId(point.toString()),
@@ -145,8 +120,12 @@ class MapSampleState extends State<MyHomePage> {
           showDialog(
               context: context,
               builder: (BuildContext context) {
-                return CheeseInfoDialog(MarkerId(point.toString()),
-                    appState.displayMessage(MarkerId(point.toString())));
+                return appState
+                        .checkIfCheeseHasMessage(MarkerId(point.toString()))
+                    ? CheeseInfoDialog(MarkerId(point.toString()),
+                        appState.displayMessage(MarkerId(point.toString())))
+                    : CheeseDialog(
+                        MarkerId(point.toString()), showNotifications);
               });
         });
 
@@ -165,17 +144,17 @@ class MapSampleState extends State<MyHomePage> {
           zoom: 15,
         ),
 
-        //returns all markers from cheese
+        //returns all markers from cheese in a list, which then is displayed in the map
         markers: Set.from(appState.cheese
             .map((x) => initialCheeseMarker(x.marker.position))
             .toList()),
 
-        //when map is created, run this function
+        //when map is created, this Google Map controller is run
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
         },
 
-        //on long press on google map, cheese is added
+        //on long press on at any point of the Google map, the cheese is added and Cheese dialog opens to add input
         onLongPress: (LatLng point) {
           setState(() {
             appState.add(initialCheeseMarker(point));
@@ -183,7 +162,12 @@ class MapSampleState extends State<MyHomePage> {
           showDialog(
               context: context,
               builder: (BuildContext context) {
-                return CheeseDialog(MarkerId(point.toString()));
+                //Cheese Dialog class takes a newly created marker Id and show notifications function to as to be passed down the widget tree
+                //the marker id will in assigning the new message to the newly created marker
+                //the show notifications function will be used in a check, if true, will call back the function so that it can display a widget in the
+                //HomePage() context
+                return CheeseDialog(
+                    MarkerId(point.toString()), showNotifications);
               });
         },
         myLocationEnabled: true,

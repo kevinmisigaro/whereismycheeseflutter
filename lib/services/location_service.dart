@@ -9,6 +9,7 @@ class LocationService {
 
   Location location = Location();
 
+  //location broadcast stream
   StreamController<UserLocation> _locationController = StreamController<UserLocation>.broadcast();
 
   LocationService() {
@@ -28,7 +29,7 @@ class LocationService {
    });
   }
 
-//get location stream
+//getter for location stream
   Stream<UserLocation> get locationStream => _locationController.stream;
 
 //function to get user current location

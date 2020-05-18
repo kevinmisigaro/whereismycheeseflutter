@@ -2,14 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import '../models/cheese.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import '../widgets/cheeseMarker.dart';
 
 class CheeseModel extends ChangeNotifier {
 
   //list of cheese
   final List<Cheese> _cheese = [];
 
-//getter for cheese
+//getter for List of cheese
   List<Cheese> get cheese => _cheese;
 
 //function to add Cheese
@@ -17,11 +16,6 @@ class CheeseModel extends ChangeNotifier {
     _cheese.add(Cheese(id: marker.markerId, marker: marker));
     notifyListeners();
   }
-
-//adds initial static markers to the map to emulate markers put by "other" users of the app
-//  void addInitialMarkers(Marker marker) {
-//    _cheese.add(Cheese(id: marker.markerId, marker: marker));
-//  }
 
 //function to add message to newly created cheese
   void sendMessage(MarkerId id, String message) {
@@ -36,6 +30,13 @@ class CheeseModel extends ChangeNotifier {
     result.hasMessage = !result.hasMessage;
     notifyListeners();
   }
+
+  LatLng getLatLng(MarkerId id){
+    //first check for the Cheese value which matches the id passed on the argument
+    var result = _cheese.firstWhere((x) => x.id == id);
+    return result.marker.position;
+  }
+
 
 //function to check if cheese has message
   bool checkIfCheeseHasMessage(MarkerId markerId) {
@@ -65,3 +66,10 @@ class CheeseModel extends ChangeNotifier {
     notifyListeners();
   }
 }
+
+
+
+//adds initial static markers to the map to emulate markers put by "other" users of the app
+//  void addInitialMarkers(Marker marker) {
+//    _cheese.add(Cheese(id: marker.markerId, marker: marker));
+//  }

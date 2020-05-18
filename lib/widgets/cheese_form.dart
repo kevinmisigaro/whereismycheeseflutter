@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_google_map_trial/models/user_location.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import '../services/cheese_service.dart';
+import 'package:latlong/latlong.dart' as lat; //function to help calculate distance between two geo-locations
 
 class CheeseForm extends StatefulWidget {
   final MarkerId markerId;
+  final Function notificationFunction;
 
-  CheeseForm(this.markerId);
+  CheeseForm(this.markerId, this.notificationFunction);
 
   @override
   State<StatefulWidget> createState() {
@@ -19,9 +22,34 @@ class CheeseFormState extends State<CheeseForm> {
   final _formKey = GlobalKey<FormState>();
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     TextEditingController _textEditingController = TextEditingController();
     var appState = Provider.of<CheeseModel>(context);
+
+    final lat.Distance distance = new lat.Distance();
+
+    var userLocation = Provider.of<UserLocation>(context); //get current user location
+
+    final LatLng position = appState.getLatLng(widget.markerId); //get marker LatLng from marker ID using the cheese service
+
+    //Calculate distance between all markers and user location
+    void calculateDistance(latitude, longitude) {
+      final double meter = distance(
+          new lat.LatLng(userLocation.latitude, userLocation.longitude),
+          new lat.LatLng(latitude, longitude));
+
+      //if distance is less or equal to 50 meters, display notification
+      if (meter <= 50) {
+        widget.notificationFunction(); //fires the function passed down the widget tree to display notification
+      }
+    }
+
     // TODO: implement build
     return Form(
         key: _formKey,
@@ -34,7 +62,7 @@ class CheeseFormState extends State<CheeseForm> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
                   //close button
-                  IconButton( 
+                  IconButton(
                       icon: Icon(Icons.clear),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -43,7 +71,7 @@ class CheeseFormState extends State<CheeseForm> {
               ),
 
               //text input field
-              TextFormField( 
+              TextFormField(
                 decoration: InputDecoration(
                   fillColor: Colors.grey[100],
                   filled: true,
@@ -67,17 +95,21 @@ class CheeseFormState extends State<CheeseForm> {
                   return null;
                 },
               ),
-              SizedBox(height: 7.0,),
+              SizedBox(
+                height: 7.0,
+              ),
               ClipRRect(
                 borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                child: RaisedButton( //submit button
+                child: RaisedButton(
+                  //submit button
                   color: Colors.orange,
                   textColor: Colors.white,
                   onPressed: () {
                     //function call which adds the text to the cheese
-                    appState.sendMessage( 
+                    appState.sendMessage(
                         widget.markerId, _textEditingController.text);
                     Navigator.of(context).pop();
+                    calculateDistance(position.latitude, position.longitude);
                   },
                   child: Text('Save Cheese!'),
                 ),

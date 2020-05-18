@@ -4,10 +4,11 @@ import 'cheese_form.dart';
 
 //Widget which holds form to add to newly created cheese
 class CheeseDialog extends StatelessWidget {
-
   final MarkerId markerId;
+  final Function notificationFunction;
 
-  CheeseDialog(this.markerId);
+  //Cheese dialog takes in markerId and notification function to pass down the widget tree to the cheese form
+  CheeseDialog(this.markerId, this.notificationFunction);
 
   @override
   Widget build(BuildContext context) {
@@ -17,12 +18,10 @@ class CheeseDialog extends StatelessWidget {
       child: Container(
         height: 280.0,
         width: 300.0,
-        child: Column(
-            children:<Widget>[
-              //form to add message to cheese
-              CheeseForm(this.markerId) 
-            ]
-        ),
+        child: Column(children: <Widget>[
+          //form to add message to cheese
+          CheeseForm(markerId, notificationFunction)
+        ]),
       ),
     );
   }
