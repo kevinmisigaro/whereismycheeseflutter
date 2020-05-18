@@ -20,7 +20,7 @@ Need to have the the following in user computer to run this application:
 ## How to run this application
 - Make sure flutter is installed in the target computer
 - Clone repository
-- Get packpages/dependencies by running flutter packages get in terminal (or on pubspec.yaml file)
+- Get packpages/dependencies by running ```flutter packages get``` in terminal (or on pubspec.yaml file)
 - Connect physical device with computer and run the application (or run flutter run)
 
 ## Code structure
