@@ -9,6 +9,8 @@ import '../models/user_location.dart';
 import '../services/cheese_service.dart';
 import '../widgets/cheeseInfoDialog.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:latlong/latlong.dart'
+    as lat; //function to help calculate distance between two geo-locations
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -25,9 +27,13 @@ class MapSampleState extends State<MyHomePage> {
   var settingsIOS;
   var initializationSettings;
 
+  Marker markerToCheck;
+  List markerList = [];
+
   @override
   void initState() {
     super.initState();
+
     //Following code handles notifications
     settingsAndroid = AndroidInitializationSettings('cheese_logo');
     settingsIOS = IOSInitializationSettings(
@@ -45,6 +51,7 @@ class MapSampleState extends State<MyHomePage> {
       pinLocationIcon = onValue;
     });
   }
+
   //notification message display for android
   Future onSelectNotification(String payload) async {
     if (payload != null) {
@@ -104,6 +111,8 @@ class MapSampleState extends State<MyHomePage> {
 
   Completer<GoogleMapController> _controller = Completer();
 
+  final lat.Distance distance = new lat.Distance();
+
   @override
   Widget build(BuildContext context) {
     //provider for user location with latitude and longitude
@@ -111,6 +120,42 @@ class MapSampleState extends State<MyHomePage> {
 
     //provider for cheese list
     final appState = Provider.of<CheeseModel>(context);
+
+    //Calculate distance between newly created marker and user location
+    double calculateDistance(latitude, longitude) {
+      final double meter = distance(
+          new lat.LatLng(userLocation.latitude, userLocation.longitude),
+          new lat.LatLng(latitude, longitude));
+
+      return meter;
+    }
+
+    checkIfCloseToUserLocation() {
+        appState.cheese.forEach((element) {
+          double meter = calculateDistance(element.marker.position.latitude,
+              element.marker.position.longitude);
+          if (!markerList.contains(element.marker)) {
+            if (meter <= 50) {
+              setState(() {
+                markerList.add(element.marker);
+              });
+              showNotifications();
+            } else {
+              return null;
+            }
+          } else {
+            if (meter <= 50) {
+              return null;
+            } else {
+              setState(() {
+                markerList.remove(element.marker);
+              });
+            }
+          }
+        });
+    }
+
+    checkIfCloseToUserLocation();
 
     //setting how the marker in Google Map will appear.
     Marker initialCheeseMarker(LatLng point) => Marker(
@@ -121,12 +166,8 @@ class MapSampleState extends State<MyHomePage> {
           showDialog(
               context: context,
               builder: (BuildContext context) {
-                return appState
-                        .checkIfCheeseHasMessage(MarkerId(point.toString()))
-                    ? CheeseInfoDialog(MarkerId(point.toString()),
-                        appState.displayMessage(MarkerId(point.toString())))
-                    : CheeseDialog(
-                        MarkerId(point.toString()), showNotifications);
+                return CheeseInfoDialog(MarkerId(point.toString()),
+                        appState.displayMessage(MarkerId(point.toString())));
               });
         });
 
@@ -157,9 +198,9 @@ class MapSampleState extends State<MyHomePage> {
 
         //on long press on at any point of the Google map, the cheese is added and Cheese dialog opens to add input
         onLongPress: (LatLng point) {
-          setState(() {
-            appState.add(initialCheeseMarker(point));
-          });
+          // setState(() {
+          //   appState.add(initialCheeseMarker(point));
+          // });
           showDialog(
               context: context,
               builder: (BuildContext context) {
@@ -168,7 +209,7 @@ class MapSampleState extends State<MyHomePage> {
                 //the show notifications function will be used in a check, if true, will call back the function so that it can display a widget in the
                 //HomePage() context
                 return CheeseDialog(
-                    MarkerId(point.toString()), showNotifications);
+                    point, initialCheeseMarker);
               });
         },
         myLocationEnabled: true,

@@ -12,8 +12,8 @@ class CheeseModel extends ChangeNotifier {
   List<Cheese> get cheese => _cheese;
 
 //function to add Cheese
-  void add(Marker marker) {
-    _cheese.add(Cheese(id: marker.markerId, marker: marker));
+  void add(Marker marker, String message) {
+    _cheese.add(Cheese(id: marker.markerId, marker: marker, message: message, isYours: true, hasMessage: true ));
     notifyListeners();
   }
 
