@@ -1,86 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_google_map_trial/models/user_location.dart';
-import 'package:flutter_google_map_trial/widgets/cheeseInfoDialog.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import '../services/cheese_service.dart';
-import 'package:latlong/latlong.dart'
-    as lat; //function to help calculate distance between two geo-locations
 
 class CheeseForm extends StatefulWidget {
-  final LatLng marker;
+  final LatLng markerLatLang;
   final Function markerMaker;
 
-  CheeseForm(this.marker, this.markerMaker);
+  CheeseForm(this.markerLatLang, this.markerMaker);
 
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return CheeseFormState();
   }
 }
 
 class CheeseFormState extends State<CheeseForm> {
-
-    BitmapDescriptor pinLocationIcon;
-
   final _formKey = GlobalKey<FormState>();
 
   //controller placed before build so as to not cause constant rebuilding and disappearing of text
   final TextEditingController _textEditingController = TextEditingController();
 
   @override
-  void initState() {
-    super.initState();
-
-      //Custom image for marker
-    BitmapDescriptor.fromAssetImage(ImageConfiguration(devicePixelRatio: 2.5),
-            'assets/icon/cheese64.png')
-        .then((onValue) {
-      pinLocationIcon = onValue;
-    });
-
-  }
-
-
-  @override
   Widget build(BuildContext context) {
     //call app state so as to get functions from services
     var appState = Provider.of<CheeseModel>(context);
-
-        //setting how the marker in Google Map will appear.
-    Marker initialCheeseMarker(LatLng point) => Marker(
-        markerId: MarkerId(point.toString()),
-        position: point,
-        icon: pinLocationIcon,
-        onTap: () {
-          showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return CheeseInfoDialog(MarkerId(point.toString()),
-                        appState.displayMessage(MarkerId(point.toString())));
-              });
-        });
-
-    // final lat.Distance distance = new lat.Distance();
-
-    // //get current user location
-    // var userLocation = Provider.of<UserLocation>(context);
-
-    // //get marker LatLng from marker ID using the cheese service
-    // final LatLng position = appState.getLatLng(widget.marker);
-
-    //Calculate distance between newly created marker and user location
-    // void calculateDistance(latitude, longitude) {
-    //   final double meter = distance(
-    //       new lat.LatLng(userLocation.latitude, userLocation.longitude),
-    //       new lat.LatLng(latitude, longitude));
-
-    //   //if distance is less or equal to 50 meters, display notification
-    //   if (meter <= 50) {
-    //     notificationFunction(); //fires the function passed down the widget tree to display notification
-    //   }
-    // }
 
     return Form(
         key: _formKey,
@@ -138,12 +82,12 @@ class CheeseFormState extends State<CheeseForm> {
                   color: Colors.orange,
                   textColor: Colors.white,
                   onPressed: () {
-                    appState.add(widget.markerMaker(widget.marker), _textEditingController.text);
-                    //function call which adds the text to the cheese
-                    // appState.sendMessage(widget.markerId, _textEditingController.text);
+                    //add new marker and cheese
+                    appState.add(widget.markerMaker(widget.markerLatLang),
+                        _textEditingController.text);
+
                     //closes dialog and returns to previous context, which is the home screen
-                    Navigator.of(context)
-                        .pop(); 
+                    Navigator.of(context).pop();
                   },
                   child: Text('Save Cheese!'),
                 ),

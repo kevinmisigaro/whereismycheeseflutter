@@ -17,20 +17,6 @@ class CheeseModel extends ChangeNotifier {
     notifyListeners();
   }
 
-//function to add message to newly created cheese
-  void sendMessage(MarkerId id, String message) {
-    //add message for marker which matches the id
-
-    //first check for the Cheese value which matches the id passed on the argument
-    var result = _cheese.firstWhere((x) => x.id == id);
-    //assign message string to cheese value
-    result.message = message;
-    
-    result.isYours = !result.isYours;
-    result.hasMessage = !result.hasMessage;
-    notifyListeners();
-  }
-
   //get latitude and longitude point from marker ID
   LatLng getLatLng(MarkerId id){
     //first check for the Cheese value which matches the id passed on the argument
