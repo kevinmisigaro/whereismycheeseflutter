@@ -5,36 +5,26 @@ import 'package:provider/provider.dart';
 import '../services/cheese_service.dart';
 import 'package:latlong/latlong.dart' as lat; //function to help calculate distance between two geo-locations
 
-class CheeseForm extends StatefulWidget {
+class CheeseForm extends StatelessWidget {
   final MarkerId markerId;
   final Function notificationFunction;
 
   CheeseForm(this.markerId, this.notificationFunction);
 
-  @override
-  State<StatefulWidget> createState() {
-    return CheeseFormState();
-  }
-}
-
-class CheeseFormState extends State<CheeseForm> {
   final _formKey = GlobalKey<FormState>();
 
-  @override
-  void initState() {
-    super.initState();
-  }
+  final TextEditingController _textEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController _textEditingController = TextEditingController();
+
     var appState = Provider.of<CheeseModel>(context);
 
     final lat.Distance distance = new lat.Distance();
 
     var userLocation = Provider.of<UserLocation>(context); //get current user location
 
-    final LatLng position = appState.getLatLng(widget.markerId); //get marker LatLng from marker ID using the cheese service
+    final LatLng position = appState.getLatLng(markerId); //get marker LatLng from marker ID using the cheese service
 
     //Calculate distance between newly created marker and user location
     void calculateDistance(latitude, longitude) {
@@ -44,14 +34,14 @@ class CheeseFormState extends State<CheeseForm> {
 
       //if distance is less or equal to 50 meters, display notification
       if (meter <= 50) {
-        widget.notificationFunction(); //fires the function passed down the widget tree to display notification
+        notificationFunction(); //fires the function passed down the widget tree to display notification
       }
     }
 
     return Form(
         key: _formKey,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
+          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
@@ -105,7 +95,7 @@ class CheeseFormState extends State<CheeseForm> {
                   onPressed: () {
                     //function call which adds the text to the cheese
                     appState.sendMessage(
-                        widget.markerId, _textEditingController.text);
+                        markerId, _textEditingController.text);
                     Navigator.of(context).pop(); //closes dialog and returns to previous context, which is the home screen
                     calculateDistance(position.latitude, position.longitude); //call function to calculate distance between user location and new marker
                   },
