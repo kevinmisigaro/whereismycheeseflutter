@@ -7,6 +7,7 @@
 - User can collect cheesey notes on the map.
 - User can add cheesey notes on the map.
 - App continues to run/persist in the background
+- App notifies user if they are close to a cheese
 
 
 ## Requirements to run this app on target machine
@@ -27,8 +28,7 @@ Need to have the the following in user computer to run this application:
 
 The main code is found in the lib folder. It contains:
 - models
-- provider (to handle State Management)
-- services (to handle location service)
+- services (to handle State management and location service)
 - views (screen(s) which the user sees)
 - widgets (independent widgets)
 - main.dart (file from where the whole app starts to run)
@@ -47,6 +47,9 @@ Plugins are essential in flutter applications. Here are some of the plugins used
  - flutter_local_notifications: ^1.4.3 (App Notifications)
  - latlong: ^0.6.1 (Geolocation Calculations)
  
- ## Drawbacks
- 
- Implementing background notifications was hard due to failure to get a proper plugin to display notifications while app runs on the background. One possible plugin would have been background_fetch but it sends notifications after 15 minutes whereby this app needs to display notification to the user on the spot.
+## How the app works
+The app gets user location from the LocationService located in services/location_service. This sends a stream the app, continuously updating the user location.
+
+Cheese data is handled by CheeseModel in services/cheese_service. This sends data to the app asychronously if cheese stored locally in the app; if a new cheese is added, removed(picked up) and the data contained(messages).
+
+Google Map covers the body of the Scaffold in the main home page widget/view. Thanks to the google_maps_flutter plugin and adding some settings on the android folders, it is possible to display a map and add markers.
