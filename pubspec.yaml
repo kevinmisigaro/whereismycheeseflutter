@@ -24,7 +24,6 @@ dependencies:
   location: ^3.0.2
   provider: ^3.0.0
   flutter_local_notifications: ^1.4.3
-  path_provider: ^1.6.7
   latlong: ^0.6.1
 
 

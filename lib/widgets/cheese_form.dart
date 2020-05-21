@@ -16,9 +16,9 @@ class CheeseForm extends StatefulWidget {
 }
 
 class CheeseFormState extends State<CheeseForm> {
+  //form key for handling the form
   final _formKey = GlobalKey<FormState>();
 
-  //controller placed before build so as to not cause constant rebuilding and disappearing of text
   final TextEditingController _textEditingController = TextEditingController();
 
   @override
@@ -82,10 +82,9 @@ class CheeseFormState extends State<CheeseForm> {
                   color: Colors.orange,
                   textColor: Colors.white,
                   onPressed: () {
-                    //add new marker and cheese
+                    //add new marker, message and cheese
                     appState.add(widget.markerMaker(widget.markerLatLang),
                         _textEditingController.text);
-
                     //closes dialog and returns to previous context, which is the home screen
                     Navigator.of(context).pop();
                   },

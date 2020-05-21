@@ -17,7 +17,7 @@ class CheeseDialog extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
       child: Container(
         height: 280.0,
-        width: 400.0,
+        width: 350.0,
         child: Column(children: <Widget>[
           //form to add message to cheese
           CheeseForm(markerLatLang, markerMaker)

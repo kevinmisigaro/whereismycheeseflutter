@@ -27,8 +27,7 @@ class MapSampleState extends State<MyHomePage> {
   var settingsIOS;
   var initializationSettings;
 
-  Marker markerToCheck;
-  List markerList = [];
+  List<Marker> markerList = [];
 
   @override
   void initState() {
@@ -44,7 +43,7 @@ class MapSampleState extends State<MyHomePage> {
     notifications.initialize(initializationSettings,
         onSelectNotification: onSelectNotification);
 
-    //Custom image for marker
+    //Sets custom image for marker; in this case, cheese.
     BitmapDescriptor.fromAssetImage(ImageConfiguration(devicePixelRatio: 2.5),
             'assets/icon/cheese64.png')
         .then((onValue) {
@@ -121,32 +120,46 @@ class MapSampleState extends State<MyHomePage> {
     //provider for cheese list
     final appState = Provider.of<CheeseModel>(context);
 
-    //Calculate distance between newly created marker and user location
+    //Calculate distance between marker and user location using latitude and longitude
     double calculateDistance(latitude, longitude) {
       final double meter = distance(
           new lat.LatLng(userLocation.latitude, userLocation.longitude),
           new lat.LatLng(latitude, longitude));
-
+      //return distances in meters
       return meter;
     }
 
-    checkIfCloseToUserLocation() {
+    //function which assists in handling notifications if user is 50 meters away from a marker
+    //ensures that the app notifies the user just once about a new cheese near their location.
+    //since marker data comes as a continuous stream to the user, the user might be notified continously
+    //UNLESS, the marker which satifies the condition is saved in an array, and the user is notified once
+    //then each time the stream passes the marker, and the marker still satisfies the condition, the notification isnt fired
+    //when the marker fails to satisfy the condition, it is removed from said array.
+    checkIfCloseToUserLocation() { 
         appState.cheese.forEach((element) {
+          //for each marker in cheese, calculate distance between marker and user location and return distance
           double meter = calculateDistance(element.marker.position.latitude,
               element.marker.position.longitude);
+          //check if the marker is NOT in the variable list
           if (!markerList.contains(element.marker)) {
+            //check if distance is less or equal to 50 meters
             if (meter <= 50) {
               setState(() {
+                //if so, add marker to variable list
                 markerList.add(element.marker);
               });
+              //then show notification
               showNotifications();
             } else {
               return null;
             }
           } else {
+            //if marker which is in list is less than 50 meters
             if (meter <= 50) {
+              //do nothing
               return null;
             } else {
+              //otherwise remove from list since it now does not satisfy the condition
               setState(() {
                 markerList.remove(element.marker);
               });
@@ -159,13 +172,15 @@ class MapSampleState extends State<MyHomePage> {
 
     //setting how the marker in Google Map will appear.
     Marker initialCheeseMarker(LatLng point) => Marker(
-        markerId: MarkerId(point.toString()),
-        position: point,
+        markerId: MarkerId(point.toString()), //take point and convert it to string to make it the marker ID
+        position: point, 
         icon: pinLocationIcon,
         onTap: () {
+          //when the marker is tapped it opens a dialog
           showDialog(
               context: context,
               builder: (BuildContext context) {
+                //this is a dialog which contains the cheese message
                 return CheeseInfoDialog(MarkerId(point.toString()),
                         appState.displayMessage(MarkerId(point.toString())));
               });
@@ -196,18 +211,12 @@ class MapSampleState extends State<MyHomePage> {
           _controller.complete(controller);
         },
 
-        //on long press on at any point of the Google map, the cheese is added and Cheese dialog opens to add input
+        //on long press on at any point of the Google map, 
+        //a dialog opens up and the user can enter the cheese message and add it to the list of cheese
         onLongPress: (LatLng point) {
-          // setState(() {
-          //   appState.add(initialCheeseMarker(point));
-          // });
           showDialog(
               context: context,
               builder: (BuildContext context) {
-                //Cheese Dialog class takes a newly created marker Id and show notifications function to as to be passed down the widget tree
-                //the marker id will in assigning the new message to the newly created marker
-                //the show notifications function will be used in a check, if true, will call back the function so that it can display a widget in the
-                //HomePage() context
                 return CheeseDialog(
                     point, initialCheeseMarker);
               });
