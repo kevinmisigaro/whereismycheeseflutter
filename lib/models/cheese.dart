@@ -10,6 +10,7 @@ class Cheese{
   final Marker marker;  //marker which points where the cheese is in the GPS
   bool hasMessage;      //boolean to check if cheese has message
   bool isYours;         //boolean to check if cheese is made by user
+  bool isFirstTime;
 
-  Cheese({@required this.id, this.message, @required this.marker, this.hasMessage = false, this.isYours = false,});
+  Cheese({@required this.id, this.message, @required this.marker, this.hasMessage = false, this.isYours = false, this.isFirstTime = true});
 }

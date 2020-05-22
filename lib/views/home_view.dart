@@ -59,7 +59,7 @@ class MapSampleState extends State<MyHomePage> {
     await showDialog(
         context: context,
         builder: (BuildContext context) => AlertDialog(
-              content: Text('Check your nearest location for cheese'),
+              content: Text('There was a cheese near your location, now it has been removed'),
               actions: <Widget>[
                 FlatButton(
                     onPressed: () {
@@ -76,7 +76,7 @@ class MapSampleState extends State<MyHomePage> {
     await showDialog(
         context: context,
         builder: (BuildContext context) => AlertDialog(
-              content: Text('Check your nearest location for cheese'),
+              content: Text('There was a cheese near your location, now it has been removed'),
               actions: <Widget>[
                 FlatButton(
                     onPressed: () {
@@ -131,49 +131,59 @@ class MapSampleState extends State<MyHomePage> {
 
     //function which assists in handling notifications if user is 50 meters away from a marker
     //ensures that the app notifies the user just once about a new cheese near their location.
-    //since marker data comes as a continuous stream to the user, the user might be notified continously
-    //UNLESS, the marker which satifies the condition is saved in an array, and the user is notified once
-    //then each time the stream passes the marker, and the marker still satisfies the condition, the notification isnt fired
+    //since marker data comes as a continuous stream to the user, the user might be notified continuously
+    //UNLESS, the marker which satisfies the condition is saved in an array, and the user is notified once
+    //then each time the stream passes the marker, and the marker still satisfies the condition, the notification isn't fired
     //when the marker fails to satisfy the condition, it is removed from said array.
-    checkIfCloseToUserLocation() { 
-        appState.cheese.forEach((element) {
-          //for each marker in cheese, calculate distance between marker and user location and return distance
-          double meter = calculateDistance(element.marker.position.latitude,
-              element.marker.position.longitude);
-          //check if the marker is NOT in the variable list
-          if (!markerList.contains(element.marker)) {
-            //check if distance is less or equal to 50 meters
-            if (meter <= 50) {
+    checkIfCloseToUserLocation() {
+      appState.cheese.forEach((element) {
+        //for each marker in cheese instance, calculate distance between marker and user location and return distance
+        double meter = calculateDistance(element.marker.position.latitude,
+            element.marker.position.longitude);
+        //check if the marker is NOT in the variable list
+        if (!markerList.contains(element.marker)) {
+          //check if distance is less or equal to 50 meters
+          if (meter <= 50) {
+            //check if this is a new marker
+            if (element.isFirstTime) {
+              //if so, do not do anything
+              return null;
+            } else {
               setState(() {
-                //if so, add marker to variable list
+                //if marker distace from user is less than 50 meters and is not a newly created marker , add marker to variable list
                 markerList.add(element.marker);
               });
               //then show notification
               showNotifications();
-            } else {
-              return null;
+              //remove marker
+              appState.remove(element.marker.markerId);
             }
           } else {
-            //if marker which is in list is less than 50 meters
-            if (meter <= 50) {
-              //do nothing
-              return null;
-            } else {
-              //otherwise remove from list since it now does not satisfy the condition
-              setState(() {
-                markerList.remove(element.marker);
-              });
-            }
+            //if marker distance from user is greater than 50 meteres and its a newly created marker, remove boolen to check as newly created marker
+            element.isFirstTime = false;
           }
-        });
+        } else {
+          //if marker which is in list is less than 50 meters
+          if (meter <= 50) {
+            //do nothing
+            return null;
+          } else {
+            //otherwise remove from list since it now does not satisfy the condition
+            setState(() {
+              markerList.remove(element.marker);
+            });
+          }
+        }
+      });
     }
 
     checkIfCloseToUserLocation();
 
     //setting how the marker in Google Map will appear.
     Marker initialCheeseMarker(LatLng point) => Marker(
-        markerId: MarkerId(point.toString()), //take point and convert it to string to make it the marker ID
-        position: point, 
+        markerId: MarkerId(point
+            .toString()), //take point and convert it to string to make it the marker ID
+        position: point,
         icon: pinLocationIcon,
         onTap: () {
           //when the marker is tapped it opens a dialog
@@ -182,7 +192,7 @@ class MapSampleState extends State<MyHomePage> {
               builder: (BuildContext context) {
                 //this is a dialog which contains the cheese message
                 return CheeseInfoDialog(MarkerId(point.toString()),
-                        appState.displayMessage(MarkerId(point.toString())));
+                    appState.displayMessage(MarkerId(point.toString())));
               });
         });
 
@@ -211,14 +221,13 @@ class MapSampleState extends State<MyHomePage> {
           _controller.complete(controller);
         },
 
-        //on long press on at any point of the Google map, 
+        //on long press on at any point of the Google map,
         //a dialog opens up and the user can enter the cheese message and add it to the list of cheese
         onLongPress: (LatLng point) {
           showDialog(
               context: context,
               builder: (BuildContext context) {
-                return CheeseDialog(
-                    point, initialCheeseMarker);
+                return CheeseDialog(point, initialCheeseMarker);
               });
         },
         myLocationEnabled: true,
