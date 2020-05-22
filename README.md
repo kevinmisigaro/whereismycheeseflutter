@@ -53,3 +53,11 @@ The app gets user location from the LocationService located in services/location
 Cheese data is handled by CheeseModel in services/cheese_service. This sends data to the app asychronously if cheese stored locally in the app; if a new cheese is added, removed(picked up) and the data contained(messages).
 
 Google Map covers the body of the Scaffold in the main home page widget/view. Thanks to the google_maps_flutter plugin and adding some settings on the android folders, it is possible to display a map and add markers.
+
+## Challenge requirements
+- Here are the requirements for the challenge:
+- That the app allows a user to long-press any point in a displayed map on the screen to call-up a dialog box,where the user can enter a title for their "cheese" marker, and once the user clears the box, the marker is added to that location on the map.
+- Ensure that the app does not trigger the proximity notification at the time the user added the marker. The user should be able to navigate away and then navigate towards the "cheese" marker before the notification can be triggered when the device is in close proximity (at least 50 m (fifty meters)) from the "cheese" marker's geolocation.
+- Ensure that the map automatically pans and tracks the device's geolocation changes and displaying this on the map using another "position" marker showing where the device is geolocated at any point in time.
+- When a notification is eventually triggered as required in (4) above, the "cheese" marker triggered should be removed from the map.
+- The app should be able to continue tracking the user and perform the functionality in (4) above even when the app is in the background.
