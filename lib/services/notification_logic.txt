@@ -1,0 +1,50 @@
+checkIfCloseToUserLocation() {
+      appState.cheese.forEach((element) {
+        //for each marker in cheese instance, calculate distance between marker and user location and return distance
+        double meter = calculateDistance(element.marker.position.latitude,
+            element.marker.position.longitude);
+        //check if the marker is NOT in the variable list
+        if (!markerList.contains(element.marker)) {
+          //check if distance is less or equal to 50 meters
+          if (meter <= 50) {
+            //check if this is a new marker
+            if (element.isFirstTime) {
+              //if so, do not do anything
+              return null;
+            } else {
+              setState(() {
+                //if marker distace from user is less than 50 meters and is not a newly created marker , add marker to variable list
+                markerList.add(element.marker);
+              });
+              //then show notification
+              showNotifications();
+              //remove marker
+              appState.remove(element.marker.markerId);
+            }
+          } else {
+            //if marker distance from user is greater than 50 meteres and its a newly created marker, remove boolen to check as newly created marker
+            element.isFirstTime = false;
+          }
+        } else {
+          //if marker which is in list is less than 50 meters
+          if (meter <= 50) {
+            //do nothing
+            return null;
+          } else {
+            //otherwise remove from list since it now does not satisfy the condition
+            setState(() {
+              markerList.remove(element.marker);
+            });
+          }
+        }
+      });
+    }
+
+
+    EXPLANATION
+    //function which assists in handling notifications if user is 50 meters away from a marker
+    //ensures that the app notifies the user just once about a new cheese near their location.
+    //since marker data comes as a continuous stream to the user, the user might be notified continuously
+    //UNLESS, the marker which satisfies the condition is saved in an array, and the user is notified once
+    //then each time the stream passes the marker, and the marker still satisfies the condition, the notification isn't fired
+    //when the marker fails to satisfy the condition, it is removed from said array.
