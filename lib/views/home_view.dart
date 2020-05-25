@@ -137,7 +137,7 @@ class MapSampleState extends State<MyHomePage> {
       return meter;
     }
 
-    checkIfCloseToUserLocation() {
+    checkIfCloseToUserLocation() async {
       appState.cheese.forEach((element) {
         //for each marker in cheese instance, calculate distance between marker and user location and return distance
         double meter = calculateDistance(element.marker.position.latitude,
@@ -147,8 +147,7 @@ class MapSampleState extends State<MyHomePage> {
         if (meter <= 50) {
           //check if this is a new marker
           if (element.isFirstTime) {
-            //if so, do not do anything
-            return null;
+              return null;
           } else {
             //show notification
             showNotifications();
