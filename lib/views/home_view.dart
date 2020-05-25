@@ -152,9 +152,7 @@ class MapSampleState extends State<MyHomePage> {
             //show notification
             showNotifications();
             //remove marker
-            setState(() {
               appState.remove(element.marker.markerId);
-            });
           }
         } else {
           //if marker distance from user is greater than 50 meteres and its a newly created marker, remove boolen to check as newly created marker
